@@ -62,7 +62,11 @@
     setStatus("Uploading…", "");
 
     try {
-      const res = await fetch(WEBHOOK_URL, { method: "POST", body: fd });
+      const res = await fetch(WEBHOOK_URL, {
+  method: "POST",
+  headers: { "x-api-key": "PASTE_YOUR_KEY_HERE" },
+  body: fd
+});
       if (!res.ok) throw new Error("HTTP " + res.status);
       setStatus("Uploaded ✅", "ok");
       // Optional: clear after success
