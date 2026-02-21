@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Upload Receipt</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center;background:#f6f7fb}
+    .card{width:min(520px,92vw);background:white;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:18px}
+    h1{font-size:20px;margin:0 0 12px}
+    p{margin:0 0 12px;color:#444}
+    .btn{width:100%;padding:14px 16px;border:0;border-radius:12px;font-size:16px;font-weight:600}
+    .btn-primary{background:#111;color:#fff}
+    .btn-secondary{background:#e9ebf2;color:#111;margin-top:10px}
+    input[type=file]{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px}
+    .status{margin-top:12px;font-weight:600}
+    .ok{color:#0a7a2f}
+    .err{color:#b00020}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Upload Receipt</h1>
+    <p>Take a photo or choose an image, then upload.</p>
+
+    <input id="file" type="file" name="file0" accept="image/*" capture="environment" />
+
+    <button id="upload" class="btn btn-primary" style="margin-top:12px;">Upload</button>
+    <button id="reset" class="btn btn-secondary" type="button">Clear</button>
+
+    <div id="status" class="status"></div>
+  </div>
+
+<script>
+  const WEBHOOK_URL = "https://marttinch.app.n8n.cloud/webhook/upload-receipt";
+
+  const fileEl = document.getElementById("file");
+  const statusEl = document.getElementById("status");
+  const uploadBtn = document.getElementById("upload");
+  const resetBtn = document.getElementById("reset");
+
+  function setStatus(msg, cls){
+    statusEl.className = "status " + (cls || "");
+    statusEl.textContent = msg || "";
+  }
+
+  resetBtn.addEventListener("click", () => {
+    fileEl.value = "";
+    setStatus("");
+  });
+
+  uploadBtn.addEventListener("click", async () => {
+    if (!fileEl.files || !fileEl.files[0]) {
+      setStatus("Choose a photo first.", "err");
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append("file0", fileEl.files[0]);
+
+    uploadBtn.disabled = true;
+    setStatus("Uploading…", "");
+
+    try {
+      const res = await fetch(WEBHOOK_URL, { method: "POST", body: fd });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      setStatus("Uploaded ✅", "ok");
+      // Optional: clear after success
+      // fileEl.value = "";
+    } catch (e) {
+      setStatus("Upload failed ❌ (" + e.message + ")", "err");
+    } finally {
+      uploadBtn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
