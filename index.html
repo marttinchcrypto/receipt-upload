@@ -31,7 +31,8 @@
     <div id="status" class="status"></div>
   </div>
 
-<script>const WEBHOOK_URL = "https://marttinch.app.n8n.cloud/webhook/upload-receipt";
+<script>
+  const WEBHOOK_URL = "https://marttinch.app.n8n.cloud/webhook/b992b107-3be3-4b04-b113-d3f9c09dd73c";
   const API_KEY = "r4T9pQ8v-2mLxK1Z7nS0aB3cD5eF";
 
   const fileEl = document.getElementById("file");
@@ -64,10 +65,10 @@
 
     try {
       const res = await fetch(WEBHOOK_URL, {
-  method: "POST",
-  headers: { "x-api-key": API_KEY },
-  body: fd
-});
+        method: "POST",
+        headers: { "x-api-key": API_KEY },
+        body: fd
+      });
       if (!res.ok) throw new Error("HTTP " + res.status);
       setStatus("Uploaded ✅", "ok");
     } catch (e) {
@@ -76,7 +77,6 @@
       uploadBtn.disabled = false;
     }
   });
-
 </script>
 </body>
 </html>
