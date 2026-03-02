@@ -69,6 +69,7 @@
         headers: { "x-api-key": API_KEY },
         body: fd
       });
+
       if (!res.ok) throw new Error("HTTP " + res.status);
       setStatus("Uploaded ✅", "ok");
     } catch (e) {
